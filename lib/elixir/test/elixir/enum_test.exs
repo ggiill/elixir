@@ -720,6 +720,7 @@ defmodule EnumTest do
   end
 
   test "precedes?/3" do
+    assert Enum.precedes?([:a, :b, :c], :a, :c) == true
     assert Enum.precedes?([1, 2, 3], 2, 3) == true
     assert Enum.precedes?([{6}, {5}, {4}, {5}, {6}], {4}, {5}) == true
     assert Enum.precedes?([1, 2, 3], 3, 2) == false
