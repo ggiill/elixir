@@ -1297,6 +1297,19 @@ defmodule Enum do
   end
 
   @doc """
+  Checks if `following` ever occurs after `preceding` within `enumerable`.
+
+  ## Examples
+
+      iex> Enum.follows?([1,2,3], 3, 1)
+      true
+
+  """
+  @spec follows?(t, any, any) :: boolean
+  def follows?(enumerable, following, preceding),
+    do: enumerable |> :lists.reverse() |> precedes?(following, preceding)
+
+  @doc """
   Returns a map with keys as unique elements of `enumerable` and values
   as the count of every element.
 
@@ -2295,6 +2308,34 @@ defmodule Enum do
   @deprecated "Use Enum.split_with/2 instead"
   def partition(enumerable, fun) do
     split_with(enumerable, fun)
+  end
+
+  @doc """
+  Checks if `preceding` ever occurs before `following` within `enumerable`.
+
+  ## Examples
+
+      iex> Enum.precedes?([1,2,3], 1, 3)
+      true
+
+  """
+  @spec precedes?(t, any, any) :: boolean
+  def precedes?(enumerable, preceding, following) do
+    reduce_while(enumerable, :seen_neither, fn
+      entry, :seen_neither ->
+        if entry == preceding do
+          {:cont, :seen_preceding}
+        else
+          {:cont, :seen_neither}
+        end
+
+      entry, :seen_preceding ->
+        if entry == following do
+          {:halt, true}
+        else
+          {:cont, :seen_preceding}
+        end
+    end) == true
   end
 
   @doc """

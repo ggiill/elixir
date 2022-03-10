@@ -372,6 +372,14 @@ defmodule EnumTest do
     assert Enum.flat_map_reduce([1, 2, 3], 0, &{[&1, &2], &1 + &2}) == {[1, 0, 2, 1, 3, 3], 6}
   end
 
+  test "follows?/3" do
+    assert Enum.follows?([:a, :b, :c], :c, :a) == true
+    assert Enum.follows?([1, 2, 3], 2, 1) == true
+    assert Enum.follows?([{4}, {5}, {6}, {5}, {4}], {4}, {6}) == true
+    assert Enum.follows?([1, 2, 3], 1, 2) == false
+    assert Enum.follows?(["d", "e", "f"], "e", "e") == false
+  end
+
   test "frequencies/1" do
     assert Enum.frequencies([]) == %{}
     assert Enum.frequencies(~w{a c a a c b}) == %{"a" => 3, "b" => 1, "c" => 2}
@@ -709,6 +717,14 @@ defmodule EnumTest do
     assert_runs_enumeration_only_once(
       &Enum.min_max_by(&1, fn x -> x end, fn a, b -> a > b end, fn -> nil end)
     )
+  end
+
+  test "precedes?/3" do
+    assert Enum.precedes?([:a, :b, :c], :a, :c) == true
+    assert Enum.precedes?([1, 2, 3], 2, 3) == true
+    assert Enum.precedes?([{6}, {5}, {4}, {5}, {6}], {4}, {5}) == true
+    assert Enum.precedes?([1, 2, 3], 3, 2) == false
+    assert Enum.precedes?(["d", "e", "f"], "e", "e") == false
   end
 
   test "split_with/2" do
